@@ -19,9 +19,11 @@ class EnketoFormFillingMixin(FormFillingInterface):
         except InvalidElementStateException:
             pass
         actual_date_input.send_keys(date)
+        # XXX: After inputting the data a datepicker widget appears, so we need
+        # to hide it by clicking on the blank area nearby
         ActionChains(self.driver)\
             .move_to_element(actual_date_input)\
-            .move_by_offset(-200, 0).click().perform()
+            .move_by_offset(-300, 0).click().perform()
 
     def fill_date_input(self, input, date):
         self._fill_date_input(input, date, 'date')
