@@ -163,7 +163,7 @@ class FormFillingMixin(FormFillingInterface, WaiterInterface):
 
     def fill_form_and_submit(self,
                              form_selector: str,
-                             **data: t.Dict[str, InputValue]):
+                             **data: InputValue):
         """Uniform method filling and submitting form.
 
         Works both with <input> and <select>, which are located by names.

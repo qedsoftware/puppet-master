@@ -1,7 +1,8 @@
 from django.test import TestCase, Client, modify_settings, override_settings
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
 from selenium import webdriver
 
@@ -20,42 +21,9 @@ def create_driver() -> webdriver.Remote:
     return driver
 
 
-class AutoLoginMiddleware:
-    user = None
-
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
-        if self.user is not None:
-            login(request, self.user)
-        return self.get_response(request)
-
-
-@modify_settings(MIDDLEWARE={
-    'append': 'selenium_tests.common.AutoLoginMiddleware',
-    'remove': 'debug_toolbar.middleware.DebugToolbarMiddleware',
-})
-@override_settings(LOGGERS={
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['console'],
-            'propagate': True,
-            'level': 'DEBUG',
-        },
-    }
-})
-# TODO: split live server and tests case
-class SeleniumTestCase(TestCase,
-                       WaiterMixin,
-                       AssertionsMixin,
-                       FormFillingMixin):
+class SeleniumTestsMixin(WaiterMixin,
+                         AssertionsMixin,
+                         FormFillingMixin):
     """Common class for Selenium tests"""
     login_automatically = True
     starting_url = '/'
@@ -82,7 +50,7 @@ class SeleniumTestCase(TestCase,
         self.initial_window = self.driver.window_handles[0]
         # self.driver.get(settings.KPI_ADDR + self.starting_url)  # TODO
         # TODO: live_server_url
-        self.driver.get(self.live_server_url + self.starting_url)
+        self.driver.get(self.server_url + self.starting_url)
 
     def tearDown(self) -> None:
         if isinstance(self.driver, webdriver.Chrome):
@@ -107,3 +75,35 @@ class SeleniumTestCase(TestCase,
         next_window = next(filter(lambda h: h != self.initial_window,
                                   self.driver.window_handles))
         self.driver.switch_to_window(next_window)
+
+
+class SeleniumTestCase(TestCase, SeleniumTestsMixin):
+    @property
+    def server_url(self):
+        # TODO: return addr from settings
+        return ""
+
+
+@modify_settings(MIDDLEWARE={
+    'append': 'puppetmaster.middleware.AutoLoginMiddleware',
+    'remove': 'debug_toolbar.middleware.DebugToolbarMiddleware',
+})
+@override_settings(LOGGERS={
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+    }
+})
+class SeleniumLiveServerTestCase(StaticLiveServerTestCase, SeleniumTestsMixin):
+    @property
+    def server_url(self):
+        return self.live_server_url

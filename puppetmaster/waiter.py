@@ -62,13 +62,14 @@ class WaiterMixin(WaiterInterface):
 
     def wait(self,
              condition: t.Callable[[webdriver.Remote], t.Any],
-             timeout: int = 1) -> WebDriverWait:
-        for i in range(1, 5):
-            try:
-                return self._wait(condition, timeout)
-            except StaleElementReferenceException:
-                continue
-        return self._wait(condition, timeout)
+             timeout: int = 1,
+             max_tries: int = 3) -> WebDriverWait:
+        if max_tries == 0:
+            raise TimeoutException
+        try:
+            return self._wait(condition, timeout)
+        except StaleElementReferenceException:
+            return self.wait(condition, timeout, max_tries - 1)
 
     def wait_for_element(self, selector: str, timeout: int = 1) -> WebDriverWait:
         return self.wait(lambda driver: driver.find_element_by_css_selector(
