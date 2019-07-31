@@ -27,8 +27,7 @@ class AssertionsMixin(WaiterInterface):
     def assert_on_page(self, url_path: str) -> None:
         try:
             self.wait(lambda driver: (
-                # TODO self.live_server_url
-                self.live_server_url + url_path == driver.current_url
+                self.server_url + url_path == driver.current_url
             ))
         except TimeoutException:
             self.make_screenshot()

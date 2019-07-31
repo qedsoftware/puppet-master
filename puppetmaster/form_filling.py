@@ -41,7 +41,7 @@ class FormFillingInterface:
 
 class FormFillingMixin(FormFillingInterface, WaiterInterface):
     @staticmethod
-    def fill_input_with_value(input: WebElement, value: InputValue):
+    def fill_input_with_value(input: WebElement, value: InputValue) -> None:
         try:
             # If element is user-editable, clear input.
             input.clear()
@@ -53,7 +53,7 @@ class FormFillingMixin(FormFillingInterface, WaiterInterface):
     def get_input_name(input: WebElement) -> str:
         return input.get_attribute('name').split('.')[-1].split('/')[-1]
 
-    def fill_input(self, input: WebElement, **data):
+    def fill_input(self, input: WebElement, **data) -> None:
         input_name = self.get_input_name(input)
         try:
             type, value = data[input_name]  # TODO: don't use keywords

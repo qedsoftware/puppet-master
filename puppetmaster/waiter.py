@@ -15,6 +15,10 @@ class WaiterInterface:
     def __init__(self):
         self.driver = None
 
+    @property
+    def server_url(self):
+        raise NotImplementedError
+
     def _wait(self,
               condition: t.Callable[[webdriver.Remote], t.Any],
               timeout: int) -> WebDriverWait:
