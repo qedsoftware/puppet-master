@@ -1,0 +1,16 @@
+# Python
+*.py[cod]
+__pycache__
+
+# vim
+*.sw[a-p]
+
+# Build
+dist
+build
+*.egg-info
+*.whl
+
+.idea/
+.mypy_cache/
+.pytype/
