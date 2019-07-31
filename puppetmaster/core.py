@@ -13,8 +13,8 @@ from .waiter import WaiterMixin
 
 
 def create_driver() -> webdriver.Remote:
-    driver = settings.SELENIUM_DRIVER(
-        executable_path=settings.SELENIUM_DRIVER_PATH)
+    driver = settings.PM__SELENIUM_DRIVER(
+        executable_path=settings.PM__SELENIUM_DRIVER_PATH)
     # XXX: Window size must be explicitly set to avoid issue where elements
     # found in other drivers (e.g. firefox) are not visible in phantomjs.
     # For more details see: https://github.com/ariya/phantomjs/issues/11637
@@ -28,8 +28,6 @@ class SeleniumTestsMixin(WaiterMixin,
     """Common class for Selenium tests"""
     should_login_automatically = True
     starting_url = '/'
-    USERNAME = settings.USERNAME
-    PASSWORD = settings.PASSWORD
 
     def login_automatically(self) -> None:
         raise NotImplementedError
@@ -67,7 +65,7 @@ class SeleniumTestsMixin(WaiterMixin,
 class SeleniumTestCase(SeleniumTestsMixin, TestCase):
     @property
     def server_url(self):
-        return settings.SERVICE_URL  # TODO: settings
+        return settings.PM__SERVICE_URL
 
 
 @modify_settings(MIDDLEWARE={

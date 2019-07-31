@@ -62,7 +62,6 @@ class FormFillingMixin(FormFillingInterface):
     def get_value_with_type(self,
                             input_el: WebElement,
                             **data: InputValue) -> t.Tuple[InputValue, InputType]:
-        # TODO: don't use keywords!
         input_name = self.get_input_name(input_el)
         try:
             datum = data[input_name]

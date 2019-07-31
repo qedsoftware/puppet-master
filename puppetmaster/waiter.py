@@ -41,8 +41,7 @@ class WaiterInterface:
 
 class WaiterMixin(WaiterInterface):
     def make_screenshot(self, id_iter: t.Iterator[int] = itertools.count(0)):
-        # TODO: document settings, add puppet master prefixes
-        filename = (f'{settings.SELENIUM_DEFAULT_SCREENSHOT_DIR}'
+        filename = (f'{settings.PM__DEFAULT_SCREENSHOT_DIR}'
                     f'puppet_master_{os.getpid()}_{next(id_iter)}.png')
         self.driver.get_screenshot_as_file(filename)
 

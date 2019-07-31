@@ -17,14 +17,14 @@ class KobotoolboxSeleniumMixin(KobotoolboxAssertionsMixin,
     Wrapper for kobotoolbox-specific functions
     """
     ENKETO_FORM_SELECTOR = '.main .paper form'
-    USERNAME = settings.USERNAME
-    PASSWORD = settings.PASSWORD
+    USERNAME = settings.PM__KT_USERNAME
+    PASSWORD = settings.PM__KT_PASSWORD
 
     def login_automatically(self) -> None:
         self.log_in_as_user(self.USERNAME, self.PASSWORD)
 
     def log_in_as_user(self, username: str, password: str) -> None:
-        self.driver.get(settings.KPI_ADDR + Urls.LOGIN)
+        self.driver.get(settings.PM__SERVICE_URL + Urls.LOGIN)
         self.fill_form_and_submit(
             '.registration.registration--login',
             username=username, password=password)
