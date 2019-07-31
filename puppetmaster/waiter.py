@@ -1,5 +1,4 @@
 import os
-
 import itertools
 import typing as t
 
@@ -10,15 +9,10 @@ from selenium.common.exceptions import (
     TimeoutException,
     StaleElementReferenceException)
 
+from .core import BasePuppetMaster
 
-class WaiterInterface:
-    def __init__(self):
-        self.driver = None
 
-    @property
-    def server_url(self) -> str:
-        raise NotImplementedError
-
+class WaiterInterface(BasePuppetMaster):
     def _wait(self,
               condition: t.Callable[[webdriver.Remote], t.Any],
               timeout: int) -> WebDriverWait:

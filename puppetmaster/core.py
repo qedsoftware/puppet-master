@@ -3,7 +3,6 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-
 from selenium import webdriver
 
 from .assertions import AssertionsMixin
@@ -12,14 +11,23 @@ from .middleware import AutoLoginMiddleware
 from .waiter import WaiterMixin
 
 
-def create_driver() -> webdriver.Remote:
-    driver = settings.PM__SELENIUM_DRIVER(
-        executable_path=settings.PM__SELENIUM_DRIVER_PATH)
-    # XXX: Window size must be explicitly set to avoid issue where elements
-    # found in other drivers (e.g. firefox) are not visible in phantomjs.
-    # For more details see: https://github.com/ariya/phantomjs/issues/11637
-    driver.set_window_size(width=1280, height=1024)
-    return driver
+class BasePuppetMaster:
+    def __init__(self) -> None:
+        self.driver: webdriver.Remote = None
+
+    @property
+    def server_url(self) -> str:
+        raise NotImplementedError
+
+    @staticmethod
+    def create_driver() -> webdriver.Remote:
+        driver = settings.PM__SELENIUM_DRIVER(
+            executable_path=settings.PM__SELENIUM_DRIVER_PATH)
+        # XXX: Window size must be explicitly set to avoid issue where elements
+        # found in other drivers (e.g. firefox) are not visible in phantomjs.
+        # For more details see: https://github.com/ariya/phantomjs/issues/11637
+        driver.set_window_size(width=1280, height=1024)
+        return driver
 
 
 class SeleniumTestsMixin(WaiterMixin,
@@ -33,7 +41,7 @@ class SeleniumTestsMixin(WaiterMixin,
         raise NotImplementedError
 
     def setUp(self) -> None:
-        self.driver = create_driver()
+        self.driver = self.create_driver()
         self.client = Client()
 
         if self.should_login_automatically:
