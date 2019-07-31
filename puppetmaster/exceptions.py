@@ -1,7 +1,11 @@
 
-class SeleniumAssertionError(AssertionError):
+class PuppetMasterException(Exception):
     pass
 
 
-class MissingDataException(Exception):
+class SeleniumAssertionError(PuppetMasterException, AssertionError):
+    pass
+
+
+class MissingDataException(PuppetMasterException):
     pass

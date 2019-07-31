@@ -1,4 +1,5 @@
 from selenium.common.exceptions import TimeoutException
+
 from puppetmaster.exceptions import SeleniumAssertionError
 from puppetmaster.waiter import WaiterInterface
 

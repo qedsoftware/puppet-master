@@ -1,6 +1,8 @@
 from django.conf import settings
 from registration.models import RegistrationProfile
-from puppetmaster.common import SeleniumTestsMixin
+
+from .form_filling import EnketoFormFillingMixin
+from .assertions import KobotoolboxAssertionsMixin
 
 
 class Urls:
@@ -9,11 +11,17 @@ class Urls:
     ACCOUNT_SETTINGS = "/#/account-settings"
 
 
-class KobotoolboxSeleniumMixin(SeleniumTestsMixin):
+class KobotoolboxSeleniumMixin(KobotoolboxAssertionsMixin,
+                               EnketoFormFillingMixin):
     """
     Wrapper for kobotoolbox-specific functions
     """
     ENKETO_FORM_SELECTOR = '.main .paper form'
+    USERNAME = settings.USERNAME
+    PASSWORD = settings.PASSWORD
+
+    def login_automatically(self) -> None:
+        self.log_in_as_user(self.USERNAME, self.PASSWORD)
 
     def log_in_as_user(self, username: str, password: str) -> None:
         self.driver.get(settings.KPI_ADDR + Urls.LOGIN)

@@ -16,7 +16,7 @@ class WaiterInterface:
         self.driver = None
 
     @property
-    def server_url(self):
+    def server_url(self) -> str:
         raise NotImplementedError
 
     def _wait(self,
