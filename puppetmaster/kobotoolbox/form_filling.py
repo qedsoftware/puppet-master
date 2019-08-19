@@ -29,7 +29,7 @@ class EnketoFormFillingMixin(FormFillingInterface):
         # to hide it by clicking on the blank area nearby
         ActionChains(self.driver)\
             .move_to_element(actual_date_input)\
-            .move_by_offset(*self.DATEPICKER_CLICK_X_OFFSET).click().perform()
+            .move_by_offset(*self.DATEPICKER_CLICK_OFFSET).click().perform()
 
     def fill_date_input(self, input_el: WebElement, date: InputValue) -> None:
         self._fill_date_input(input_el, date, 'date')
