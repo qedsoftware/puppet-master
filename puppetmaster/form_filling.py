@@ -108,7 +108,7 @@ class FormFillingMixin(FormFillingInterface):
         self.wait(EC.element_to_be_clickable((By.CLASS_NAME, 'Select-option')))
         return select.find_elements_by_class_name('Select-option')
 
-    def react_select_option(self, select: WebElement, **data) -> None:
+    def react_select_option(self, select: WebElement, **data: InputValue) -> None:
         """Given a .Select rendered by react-select, select an option
         by label.
         """
