@@ -10,6 +10,8 @@ class EnketoFormFillingMixin(FormFillingInterface):
     Wrapper for enketo-specific form filling functions
     """
     # TODO: login to enketo before filling
+    DATEPICKER_CLICK_OFFSET = (-300, 0)
+
     def _fill_date_input(self,
                          virtual_date_input: WebElement,
                          date: InputValue,
@@ -27,7 +29,7 @@ class EnketoFormFillingMixin(FormFillingInterface):
         # to hide it by clicking on the blank area nearby
         ActionChains(self.driver)\
             .move_to_element(actual_date_input)\
-            .move_by_offset(-300, 0).click().perform()
+            .move_by_offset(*self.DATEPICKER_CLICK_X_OFFSET).click().perform()
 
     def fill_date_input(self, input_el: WebElement, date: InputValue) -> None:
         self._fill_date_input(input_el, date, 'date')

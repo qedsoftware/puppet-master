@@ -12,6 +12,9 @@ from .waiter import WaiterMixin
 
 
 class BasePuppetMaster:
+    DRIVER_WINDOW_WIDTH = 1280
+    DRIVER_WINDOW_HEIGHT = 1024
+
     def __init__(self) -> None:
         self.driver: webdriver.Remote = None
 
@@ -19,14 +22,15 @@ class BasePuppetMaster:
     def server_url(self) -> str:
         raise NotImplementedError
 
-    @staticmethod
-    def create_driver() -> webdriver.Remote:
+    @classmethod
+    def create_driver(cls) -> webdriver.Remote:
         driver = settings.PM__SELENIUM_DRIVER(
             executable_path=settings.PM__SELENIUM_DRIVER_PATH)
         # XXX: Window size must be explicitly set to avoid issue where elements
         # found in other drivers (e.g. firefox) are not visible in phantomjs.
         # For more details see: https://github.com/ariya/phantomjs/issues/11637
-        driver.set_window_size(width=1280, height=1024)
+        driver.set_window_size(width=cls.DRIVER_WINDOW_WIDTH,
+                               height=cls.DRIVER_WINDOW_HEIGHT)
         return driver
 
 
@@ -72,7 +76,7 @@ class SeleniumTestsMixin(WaiterMixin,
 
 class SeleniumTestCase(SeleniumTestsMixin, TestCase):
     @property
-    def server_url(self):
+    def server_url(self) -> str:
         return settings.PM__SERVICE_URL
 
 
@@ -107,7 +111,7 @@ class SeleniumLiveServerTestCase(SeleniumTestsMixin, StaticLiveServerTestCase):
             email='example@gmail.com',
             is_staff=False, is_active=True)
 
-    def login_automatically(self):
+    def login_automatically(self) -> None:
         self.user = self.create_user()
         self.verify_email(self.user)
         if self.login_automatically:

@@ -11,6 +11,7 @@ from selenium.common.exceptions import (
 
 from .core import BasePuppetMaster
 
+STALE_ELEMENT_DEFAULT_RETRIES = 3
 
 class WaiterInterface(BasePuppetMaster):
     def _wait(self,
@@ -56,7 +57,7 @@ class WaiterMixin(WaiterInterface):
     def wait(self,
              condition: t.Callable[[webdriver.Remote], t.Any],
              timeout: int = 1,
-             max_tries: int = 3) -> WebDriverWait:
+             max_tries: int = STALE_ELEMENT_DEFAULT_RETRIES) -> WebDriverWait:
         if max_tries == 0:
             raise TimeoutException
         try:

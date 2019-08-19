@@ -100,7 +100,7 @@ class FormFillingMixin(FormFillingInterface):
         self.wait(EC.element_to_be_clickable((By.CLASS_NAME, 'Select-option')))
         return select.find_elements_by_class_name('Select-option')
 
-    def react_select_option(self, select: WebElement, **data):
+    def react_select_option(self, select: WebElement, **data) -> None:
         """Given a .Select rendered by react-select, select an option
         by label.
         """
@@ -121,11 +121,10 @@ class FormFillingMixin(FormFillingInterface):
         else:
             raise MissingDataException('Option not found.')
 
-    def fill_checkbox(self, input_el: WebElement, values):
+    def fill_checkbox(self, input_el: WebElement, values) -> None:
         """Select checkbox in case it is required or uncheck otherwise"""
-        is_input_selected = bool(input_el.is_selected())
-        should_be_selected = bool(input_el.get_attribute("value") in values)
-        if should_be_selected and not is_input_selected:
+        should_be_selected = input_el.get_attribute("value") in values
+        if should_be_selected and not input_el.is_selected():
             input_el.click()
 
     @staticmethod
@@ -153,7 +152,7 @@ class FormFillingMixin(FormFillingInterface):
             self.get_input_name,
             form.find_elements_by_css_selector(selector))
 
-    def fill_form(self, form: WebElement, **data: InputValue):
+    def fill_form(self, form: WebElement, **data: InputValue) -> None:
         for form_input in self.get_form_inputs(form):
             self.fill_input(form_input, **data)
 
@@ -166,7 +165,7 @@ class FormFillingMixin(FormFillingInterface):
 
     def fill_form_and_submit(self,
                              form_selector: str,
-                             **data: InputValue):
+                             **data: InputValue) -> None:
         """Uniform method filling and submitting form.
 
         Example parameters:
