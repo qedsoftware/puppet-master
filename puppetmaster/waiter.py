@@ -13,6 +13,7 @@ from .core import BasePuppetMaster
 
 STALE_ELEMENT_DEFAULT_RETRIES = 3
 
+
 class WaiterInterface(BasePuppetMaster):
     def _wait(self,
               condition: t.Callable[[webdriver.Remote], t.Any],
