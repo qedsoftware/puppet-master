@@ -1,5 +1,5 @@
 import typing as t
-import re
+from datetime import datetime
 
 from selenium import webdriver
 from selenium.common.exceptions import InvalidElementStateException
@@ -59,6 +59,14 @@ class FormFillingMixin(FormFillingInterface):
     def get_input_name(input_el: WebElement) -> str:
         return input_el.get_attribute('name').split('.')[-1].split('/')[-1]
 
+    @staticmethod
+    def is_valid_date(value: InputValue) -> bool:
+        try:
+            datetime.strptime("2019-12-12", "%Y-%m-%d")
+            return True
+        except ValueError:
+            return False
+
     def get_value_with_type(self,
                             input_el: WebElement,
                             **data: InputValue) -> t.Tuple[InputValue, InputType]:
@@ -72,7 +80,7 @@ class FormFillingMixin(FormFillingInterface):
         if type(datum) == tuple:
             el_type, value = datum  # type: ignore
         # TODO: this regex should be more flexible / defined in settings
-        elif re.match(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", value) is not None:
+        elif self.is_valid_date(value):
             el_type, value = InputTypes.Date, value
         elif input_el.get_attribute('type') in ['radio', 'checkbox']:
             el_type, value = InputTypes.Checkbox, [value]
